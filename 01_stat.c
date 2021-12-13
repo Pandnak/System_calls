@@ -10,7 +10,6 @@
 
 int main(int argc, char* argv[])
 {
-    unsigned int fd;
     struct stat sb;
 
 

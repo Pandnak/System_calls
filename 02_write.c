@@ -1,3 +1,5 @@
+// Программа получает на вход файл и строку. Эта строка записывается в файл. 
+// Если такого файла не существует, то ничего не происходит.
 #include <stdio.h>   // for perrror
 #include <unistd.h>  // for write 
 #include <string.h>
@@ -6,7 +8,7 @@
 #include <sys/stat.h> 
 #include <fcntl.h> 
 //---------------------------------------------------------
-#include "../funcs.h"
+#include "./funcs.h"
 
 
 /*

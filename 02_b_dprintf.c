@@ -1,7 +1,7 @@
 // Программа получает на вход файл и строку. Эта строка записывается в файл. 
 // Если такого файла не существует, то он будет создан и в него запишется строка.
 #include <stdio.h>   // for perrror
-#include <unistd.h>  // for write 
+#include <unistd.h>  // for close 
 #include <string.h>
 #include <stdint.h> // for uint8_t
 #include <sys/types.h>
@@ -37,8 +37,8 @@ int main(int argc, char* argv[])
     }  
      
     //write string to file and check correct writing
-    if (writeall(fd, argv[2], strlen(argv[2])) < 0)
-    {   
+    if (dprintf(fd,"%s", argv[2])  < 0) // return the number of characters printed, without \0.
+    {                                   // return negative value in case of error
         perror("Failed write to file");
         close(fd);
         return RESULT_BAD_WRITE;

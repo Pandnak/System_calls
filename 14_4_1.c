@@ -25,7 +25,7 @@ int main(void)
         perror("Wrong of file");
         return RESULT_OPEN_FAILED; 
     }
-
+            
     struct timespec tmStart;  //Тут компилятор требовал инициализацию времен, 
     struct timespec tmEnd;   //хотя они все равно в них потом все равно записывается время
     //use clock_gettime

@@ -1,4 +1,4 @@
-#inc:lude <stdio.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <time.h> //for clock_gettime
 #include <stdio.h>   // for perrror
@@ -55,7 +55,7 @@ int main(void)
     clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &tmEnd);
     
     fprintf(stderr, "%ld.%06ld\n", (tmEnd.tv_nsec  - tmStart.tv_nsec)/1000000000, 
-                       (tmEnd.tv_sectv_nsec  - tmStart.tv_nsec)%1000000000/1000); //nsec in long
+                       (tmEnd.tv_nsec  - tmStart.tv_nsec)%1000000000/1000); //nsec in long
     free(buf);
     fclose(ptrFile);
     return RESULT_OK;

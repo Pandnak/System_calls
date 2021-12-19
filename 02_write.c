@@ -1,5 +1,5 @@
 // Программа получает на вход файл и строку. Эта строка записывается в файл. 
-// Если такого файла не существует, то ничего не происходит.
+// Если такого файла не существует, то он будет создан и в него запишется строка.
 #include <stdio.h>   // for perrror
 #include <unistd.h>  // for write 
 #include <string.h>
@@ -23,7 +23,7 @@ int main(int argc, char* argv[])
     {
         fprintf(stderr, "Usage: %s <pathname>\n", argv[0]);
         perror("Wrong number of arguments");
-        return 1;
+        return RESULT_BAD_ARG;
     }   
     
     //opening descriptor with accesses: r/w for user and r only for group and others
@@ -33,7 +33,7 @@ int main(int argc, char* argv[])
     if (fd < 0)
     {   
         perror("File opening error");
-        return 1;
+        return RESULT_OPEN_FAILED;
     }  
      
     //write string to file and check correct writing
@@ -41,15 +41,15 @@ int main(int argc, char* argv[])
     {   
         perror("Failed write to file");
         close(fd);
-        return 3;
+        return RESULT_BAD_WRITE;
     }
      
     //check correct closing of descriptor
     if (close(fd) < 0)
     { 
 		perror("File closing error");
-		return 4;
+		return RESULT_BAD_CLOSE;
 	} 
 
-	return 0;
+	return RESULT_OK;
 }

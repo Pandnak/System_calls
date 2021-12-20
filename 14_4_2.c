@@ -39,6 +39,11 @@ int main(void) {
 				break;
 			}
 		}
+        if (write(fileno(stdout), buf, strlen(buf)) < 0)
+        {
+            perror("Wrong writing to stdout");
+            return RESULT_BAD_WRITE;
+        }
 		nbytes += numb;
 	}
 

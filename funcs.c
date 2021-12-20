@@ -81,7 +81,7 @@ ssize_t writeall(int fd, const void *buf, size_t count) {
 	}
 	return (ssize_t)bytes_written;
 }
-
+/*
 int my_copy_files(unsigned source_fd, unsigned dest_fd, const char *dest_name,
 				  long long size_source, const unsigned max_len) {
 	// Make buffer for copy after
@@ -123,4 +123,4 @@ int my_copy_files(unsigned source_fd, unsigned dest_fd, const char *dest_name,
 	free(buf);
 
 	return RESULT_OK;
-}
+}*/

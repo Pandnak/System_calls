@@ -27,7 +27,7 @@ int main(int argc, char *argv[]) {
 	}
 
 	// Check type of reading file
-	if ((sb.st_mode & S_IFMT) != S_IFREG) {
+	if (S_ISREG(sb.st_mode)) {
 		perror("It isn't regular file. Denied");
 		return RESULT_BAD_FILE_TYPE;
 	}
@@ -38,7 +38,7 @@ int main(int argc, char *argv[]) {
 		perror("File hasn't opened");
 		return RESULT_OPEN_FAILED;
 	}
-	int dest_fd = open(argv[2], O_WRONLY, O_CREAT, O_TRUNC, 0644);
+	int dest_fd = open(argv[2], O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (dest_fd < 0) {
 		perror("File hasn't opened");
 		return RESULT_OPEN_FAILED;
@@ -52,8 +52,8 @@ int main(int argc, char *argv[]) {
 
 	long size_source = sb.st_size;
 
-	// Check rights of dest file
-	if (lstat(argv[2], &sb) == -1) {
+	// Check rights of dest file (Shouldn't check, cause OPEN has checked yet, when opening)
+	/*if (lstat(argv[2], &sb) == -1) {
 		perror("lstat");
 		return RESULT_BAD_STAT;
 	}
@@ -62,8 +62,8 @@ int main(int argc, char *argv[]) {
 		perror("Not enough rights to write");
 		return RESULT_ERR;
 	}
-
-	my_copy_files(source_fd, dest_fd, argv[2], size_source, max_len);
+    */
+	//my_copy_files(source_fd, dest_fd, argv[2], size_source, max_len);
 
 	// Closing files
 	if (close(source_fd) < 0) {

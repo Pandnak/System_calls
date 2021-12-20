@@ -1,3 +1,4 @@
+//Поменять в функции вывода времени ctime_r на strftime
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>

@@ -27,24 +27,21 @@ int main(void) {
 		return RESULT_ERR;
 	}
 
-	while (1) {
-		if ((numb = read(fileno(stdin), buf, strlen(buf))) <= 0) {
-			if (numb < 0) {
-				fprintf(stderr, "%lu bytes read\n", nbytes);
-				perror("Wrong reading stdin");
-				return RESULT_BAD_READ;
-			}
-			if (numb == 0) {
-				fprintf(stderr, "%lu bytes read\n", nbytes);
-				break;
-			}
-		}
-        if (write(fileno(stdout), buf, strlen(buf)) < 0)
-        {
-            perror("Wrong writing to stdout");
-            return RESULT_BAD_WRITE;
-        }
+	while ((numb = read(fileno(stdin), buf, strlen(buf))) > 0) {
 		nbytes += numb;
+		if (write(fileno(stdout), buf, strlen(buf)) < 0) {
+			perror("Wrong writing to stdout");
+			return RESULT_BAD_WRITE;
+		}
+		nbytes += numb;
+	}
+	if (numb < 0) {
+		fprintf(stderr, "%lu bytes read\n", nbytes);
+		perror("Wrong reading stdin");
+		return RESULT_BAD_READ;
+	}
+	if (numb == 0) {
+		fprintf(stderr, "%lu bytes read\n", nbytes);
 	}
 
 	if (clock_gettime(CLOCK_MONOTONIC, &tmEnd) < 0) {

@@ -1,3 +1,4 @@
+//Отформатировать вывод времени через дабл, например
 #include <errno.h>
 #include <fcntl.h>
 #include <stdint.h> // for uint8_t
@@ -27,19 +28,16 @@ int main(void) {
 		return RESULT_ERR;
 	}
 
-	while (1) {
-		if ((numb = read(fileno(stdin), buf, strlen(buf))) <= 0) {
-			if (numb < 0) {
-				fprintf(stderr, "%lu bytes read\n", nbytes);
-				perror("Wrong reading stdin");
-				return RESULT_BAD_READ;
-			}
-			if (numb == 0) {
-				fprintf(stderr, "%lu bytes read\n", nbytes);
-				break;
-			}
-		}
+	while ((numb = read(fileno(stdin), buf, strlen(buf))) > 0) {
 		nbytes += numb;
+	}
+	if (numb < 0) {
+		fprintf(stderr, "%lu bytes read\n", nbytes);
+		perror("Wrong reading stdin");
+		return RESULT_BAD_READ;
+	}
+	if (numb == 0) {
+		fprintf(stderr, "%lu bytes read\n", nbytes);
 	}
 
 	if (clock_gettime(CLOCK_MONOTONIC, &tmEnd) < 0) {

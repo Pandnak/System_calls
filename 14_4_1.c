@@ -8,54 +8,60 @@
 #include <sys/types.h>
 #include <time.h>	//for clock_gettime
 #include <unistd.h> // for write
+#include <errno.h>
 
 #include "./funcs.h"
 
-#define MAX_LEN 1000
-const size_t count = 5; // number of  bytes are read for one cycle
+#define MAX_LEN 1024
+const size_t count = 16; // number of  bytes are read for one cycle
 
-int main(void) {
-	unsigned long nbytes = 0;
-	void *buf = malloc(MAX_LEN);
-
-	FILE *ptrFile = fopen("stderr.txt", "wb");
-	if (ptrFile == NULL) {
-		perror("Wrong of file");
-		return RESULT_OPEN_FAILED;
-	}
+int main(void) 
+{
+	char buf[MAX_LEN];
+    ssize_t nbytes= 0, numb;
 
 	struct timespec tmStart; //Тут компилятор требовал инициализацию времен,
-	struct timespec
-		tmEnd; //хотя они все равно в них потом все равно записывается время
+    struct timespec tmEnd; //хотя они все равно в них потом все равно записывается время
 	// use clock_gettime
-	clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &tmStart);
+	if (clock_gettime(CLOCK_MONOTONIC, &tmStart) < 0)
+    {
+        perror("Error clock gettime");
+        return RESULT_ERR;
+    }
 
-	// printf("%ld\n", (- (tmEnd.tv_nsec)  + tmStart.tv_nsec)%1000000000);
-	while (1) {
-		if (nbytes += (read(fileno(stdin), buf, count)) == 0) {
-			if (ferror(stdin) != 0) {
-				// printf("%lu\n", nbytes);
-				fprintf(ptrFile, "%lu bytes read\n", nbytes);
+	while (1) 
+    {
+		if ((numb = read(fileno(stdin), buf, count)) <= 0) 
+        {
+			if (numb <  0) 
+            {
+				fprintf(stderr, "%lu bytes read\n", nbytes);
 				perror("Wrong reading stdin");
-				free(buf);
 				return RESULT_BAD_READ;
 			}
-			if (feof(stdin) != 0) {
-				// printf("%lu\n", nbytes);
-				fprintf(ptrFile, "%lu bytes read\n", nbytes);
+			if (numb == 0) 
+            {
+				fprintf(stderr, "%lu bytes read\n", nbytes);
 				break;
 			}
 		}
-		// printf("%lu\n", nbytes);
+        nbytes += numb;
 	}
-	printf("%lu\n", nbytes);
 
-	clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &tmEnd);
+	if (clock_gettime(CLOCK_MONOTONIC, &tmEnd) < 0)
+    {
+        perror("Error clock gettime");
+        return RESULT_ERR;
+    }
 
-	fprintf(
-		ptrFile, "%ld.%06ld\n", (tmEnd.tv_nsec - tmStart.tv_nsec) / 1000000000,
-		(tmEnd.tv_nsec - tmStart.tv_nsec) % 1000000000 / 1000); // nsec in long
-	free(buf);
-	fclose(ptrFile);
+    if (tmEnd.tv_nsec - tmStart.tv_nsec >= 0)
+    {
+        fprintf(stderr, "Program execution time: %ld.%09ld\n", (tmEnd.tv_sec - tmStart.tv_sec),
+		                                (tmEnd.tv_nsec - tmStart.tv_nsec)); // nsec in long
+    }
+    else
+    {
+        fprintf(stderr, "Program execution time: %ld.%09ld\n", (tmEnd.tv_sec - tmStart.tv_sec - 1), (tmEnd.tv_nsec - tmStart.tv_nsec) + 10000000000); // nsec in long
+    }
 	return RESULT_OK;
 }
